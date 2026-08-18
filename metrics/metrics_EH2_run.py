@@ -61,6 +61,11 @@ for t in time_periods:
         for s in SCENARIOS
     )
     
+    DATA["DE"][(mean_day,t)] = sum(
+        PROB[s] * DATA["DE"][(SCENARIOS_DATES[s],t)]
+        for s in SCENARIOS
+    )
+    
 # =====================================================================
 # WS
 # =====================================================================
