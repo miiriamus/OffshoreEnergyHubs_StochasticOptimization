@@ -17,11 +17,11 @@ STUDY_DAY = "2026-05-20"
 MODEL_NAMES = ["EH1", "EH2", "EH3", "EH4"]
 
 # Elementos internos a validar de UN modelo concreto (storage, HP...)
-SINGLE_MODEL_TO_PLOT = "EH3"
+SINGLE_MODEL_TO_PLOT = "EH4"
 SINGLE_MODEL_FIGURES = ["ESS", "EHP"]              # -> añade "EHP" cuando quieras validarlo también
 
 # Elementos que sí tiene sentido comparar entre modelos
-COMPARISON_FIGURES = ["Wind_used", "Curt", "G"]
+COMPARISON_FIGURES = ["Wind_used", "Curt", "G1", "G2", "G"]
 
 
 def main():
