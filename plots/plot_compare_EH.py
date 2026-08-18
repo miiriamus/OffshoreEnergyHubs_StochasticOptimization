@@ -14,7 +14,7 @@ from matplotlib.lines import Line2D
 from pathlib import Path
 import sys
 
-ROOT = Path(r"C:\Users\Miriam Ucendo\Documents\UNI\5\TFG_mates\1605136_BSc_Math\plots\plot_compare_EH.py").resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from src.input_data import load_input_data
@@ -24,7 +24,7 @@ from src.input_data import load_input_data
 # =============================================================================
 
 RESULTS_PATH = ROOT / "outputs"
-study_day = RESULTS_PATH / "2026-05-21"
+study_day = RESULTS_PATH / "2026-05-20"
 
 output_folder = study_day
 
@@ -39,10 +39,12 @@ if not os.path.exists(output_folder):
 EH1 = pd.read_excel(RESULTS_PATH / f"EH1_stc_results_{study_day}.xlsx", sheet_name="results")
 EH2 = pd.read_excel(RESULTS_PATH / f"EH2_stc_results_{study_day}.xlsx", sheet_name="results")
 EH3 = pd.read_excel(RESULTS_PATH / f"EH3_stc_results_{study_day}.xlsx", sheet_name="results")
+EH4 = pd.read_excel(RESULTS_PATH / f"EH4_stc_results_{study_day}.xlsx", sheet_name="results")
 
 EH1_first = pd.read_excel(RESULTS_PATH / f"EH1_stc_results_{study_day}.xlsx", sheet_name="first_stage")
 EH2_first = pd.read_excel(RESULTS_PATH / f"EH2_stc_results_{study_day}.xlsx", sheet_name="first_stage")
 EH3_first = pd.read_excel(RESULTS_PATH / f"EH3_stc_results_{study_day}.xlsx", sheet_name="first_stage")
+EH4_first = pd.read_excel(RESULTS_PATH / f"EH4_stc_results_{study_day}.xlsx", sheet_name="first_stage")
 
 SCENARIOS = sorted(EH1["scenario"].unique())
 
@@ -69,11 +71,14 @@ PROB_DICT = {s: PROB[s] for s in SCENARIOS_DATA}
 Azul     = "#1F4E79"
 Naranja  = "#D55E00"
 Verde    = "#2A9D8F"
+Rojo      = "#C44E52"   # Brick red
+
 
 MODELS = [
     ("EH1", EH1, EH1_first, Azul),
     ("EH2", EH2, EH2_first, Naranja),
     ("EH3", EH3, EH3_first, Verde),
+    ("EH4", EH4, EH4_first, Rojo),
 ]
 
 # =============================================================================
@@ -139,7 +144,7 @@ def plot_first_stage(column, ylabel, filename):
 
     plt.legend(
         legend_handles,
-        ["EH1", "EH2", "EH3"],
+        ["EH1", "EH2", "EH3", "EH4"],
         frameon=False,
         ncol=3,
         loc="upper center",

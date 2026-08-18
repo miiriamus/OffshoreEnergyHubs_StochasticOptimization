@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Jul 19 11:22:37 2026
+Created on Mon Aug 17 16:50:39 2026
 
 @author: Miriam_Ucendo
-@filename: EH3_run.py
+@filename: EH4_run.py
 
-EH model 3 : CHP, Transformer, Furnace, Absorption Chiller, ESS, EHP
+EH model 4 : CHP, Transformer, Furnace, Absorption Chiller, ESS, EHP, HSS
 
 """
 
@@ -23,7 +23,7 @@ sys.path.insert(0, str(ROOT))
 
 # Import
 from src.input_data import load_input_data
-from src.models import EH3_model
+from src.models import EH4_model
 
 # =====================================================================
 # CONFIGURACIÓN
@@ -44,7 +44,7 @@ dual_records = []
 # Archivo Excel donde guardaremos los resultados finales
 OUTPUT_PATH = ROOT / "outputs"
 OUTPUT_PATH.mkdir(exist_ok=True)
-output_file = OUTPUT_PATH / f"EH3_results_{study_day}.xlsx"
+output_file = OUTPUT_PATH / f"EH4_results_{study_day}.xlsx"
 
 # Limpieza previa del archivo de salida si ya existe
 if os.path.exists(output_file):
@@ -87,10 +87,10 @@ with pd.ExcelWriter(output_file, mode='w') as writer:
     
         print(f"\n--- Escenario {s}: {scenario_day} ---")
     
-        model = EH3_model(time_periods, PARAMS, DATA, study_day, scenario_day)
+        model = EH4_model(time_periods, PARAMS, DATA, study_day, scenario_day)
         
         # Solver        
-        solver = pyo.SolverFactory("glpk")
+        solver = pyo.SolverFactory("highs")
         start_time = time.perf_counter()    
         result = solver.solve(model, tee=False)
         solve_duration = time.perf_counter() - start_time   
@@ -107,12 +107,14 @@ with pd.ExcelWriter(output_file, mode='w') as writer:
             optimal_sol.append(0.0)
             continue
 
-        # Save data        
+        # Save data
         res = []
+        
         for t in time_periods:
+        
             res.append({
                 "t": t,
-
+        
                 # Inputs
                 "DE": pyo.value(model.De[t]),
                 "DH": pyo.value(model.Dh[t]),
@@ -124,7 +126,7 @@ with pd.ExcelWriter(output_file, mode='w') as writer:
                 "Curt": pyo.value(model.Wind[t]) - pyo.value(model.Wind_used[t]),
                 "E_DA": pyo.value(model.E_DA[t]),
                 "E_IDA": pyo.value(model.E_IDA[t]),
-                "E_2": pyo.value(model.E[t]),
+                "E": pyo.value(model.E[t]),
                 "E_3": pyo.value(model.E_3[t]),
         
                 # ESS
@@ -133,6 +135,12 @@ with pd.ExcelWriter(output_file, mode='w') as writer:
                 "SOC": pyo.value(model.SOC[t]),
                 "I_ch": pyo.value(model.I_ch[t]),
                 "I_dch": pyo.value(model.I_dch[t]),
+        
+                # H2 Storage System
+                "E_H2y_plus": pyo.value(model.E_H2y_plus[t]),
+                "E_H2y_minus": pyo.value(model.E_H2y_minus[t]),
+                "SOC_H2": pyo.value(model.SOC_H2[t]),
+                "I_H2y_plus": pyo.value(model.I_H2y_plus[t]),
         
                 # Gas
                 "G": pyo.value(model.G[t]),

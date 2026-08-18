@@ -19,7 +19,7 @@ import tsam.timeseriesaggregation as tsam
 # CONFIGURACIÓN
 # =====================================================
 
-N_SCENARIOS = 10
+N_SCENARIOS = 12
 
 ROOT = Path(__file__).resolve().parent
 
@@ -62,7 +62,10 @@ print(hist)
 raw = hist[
     [
         "Precio_IDA",
-        "Produccion_Eolica"
+        "Produccion_Eolica",
+        "DE",
+        "DH",
+        "DC"
     ]
 ].copy()
 
@@ -87,6 +90,9 @@ aggregation = tsam.TimeSeriesAggregation(
     weightDict={
         "Precio_IDA": 1.0,
         "Produccion_Eolica": 1.0,
+        "DE": 1.0,
+        "DH": 1.0,
+        "DC": 1.0,
     },
 
     extremePeriodMethod="new_cluster_center"

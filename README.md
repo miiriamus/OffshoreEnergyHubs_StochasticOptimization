@@ -1,6 +1,6 @@
-# BScThesis_Mathematics
+# Offshore Energy Hubs - Stochastic Optimization
 
-This repository contains the data and Python code developed for the Bachelor's Thesis on **stochastic optimization of Energy Hubs** using Pyomo. It includes the implementation of deterministic and stochastic optimization models, scenario generation, performance assessment, and graphical visualization of the results.
+This repository contains the data and Python code developed for the continuation of the Bachelor's Thesis on **stochastic optimization of Energy Hubs** to **Offshore Energy Hubs** using Pyomo. It includes the implementation of deterministic and stochastic optimization models, scenario generation, performance assessment, and graphical visualization of the results.
 
 ## Repository overview
 
@@ -103,4 +103,6 @@ Chiller.
 Absorption Chiller.
 - **EH3** : A Transformer, an ESS, an Electrical Heat Pump, a Converter Heat to
 Power, a Furnace, and an Absorption Chiller.
+- **EH4** : A Transformer, an ESS, an Electrical Heat Pump, a Converter Heat to
+Power, a Furnace, an Absorption Chiller, and a H2 tank. 
 
