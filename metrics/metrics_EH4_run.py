@@ -60,11 +60,6 @@ for t in time_periods:
         PROB[s] * DATA["Wind"][(SCENARIOS_DATES[s],t)]
         for s in SCENARIOS
     )
-    
-    DATA["DE"][(mean_day,t)] = sum(
-        PROB[s] * DATA["DE"][(SCENARIOS_DATES[s],t)]
-        for s in SCENARIOS
-    )
          
 # =====================================================================
 # WS

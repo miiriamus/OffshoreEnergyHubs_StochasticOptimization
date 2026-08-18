@@ -214,6 +214,11 @@ def EH1_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
 
     # ---------- Deterministic parameters (study day) ----------
 
+    model.De = pyo.Param(
+        model.T,
+        initialize={t: DATA["DE"][(study_day, t)] for t in time_periods}
+    )
+
     model.Dh = pyo.Param(
         model.T,
         initialize={t: DATA["DH"][(study_day, t)] for t in time_periods}
@@ -236,15 +241,6 @@ def EH1_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
 
     # ---------- Stochastic parameters (scenario days) ----------
 
-    model.De = pyo.Param(
-        model.T,
-        model.S,
-        initialize={(t, s): DATA["DE"][(scenario_days[s], t)]
-        for s in SCENARIOS
-        for t in time_periods
-        }
-    )
-    
     model.lam_IDA = pyo.Param(
         model.T,
         model.S,
@@ -343,7 +339,7 @@ def EH1_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
             m.eta_ee * m.E[t, s]
             + m.eta_ge * m.G1[t, s]
             ==
-            m.De[t, s]
+            m.De[t]
         )
 
     model.eq_c = pyo.Constraint(model.T, model.S, rule=eq_c)
@@ -719,6 +715,11 @@ def EH2_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
 
     # ---------- Deterministic parameters (study day) ----------
 
+    model.De = pyo.Param(
+        model.T,
+        initialize={t: DATA["DE"][(study_day, t)] for t in time_periods}
+    )
+
     model.Dh = pyo.Param(
         model.T,
         initialize={t: DATA["DH"][(study_day, t)] for t in time_periods}
@@ -741,15 +742,6 @@ def EH2_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
 
     # ---------- Stochastic parameters (scenario days) ----------
 
-    model.De = pyo.Param(
-        model.T,
-        model.S,
-        initialize={(t, s): DATA["DE"][(scenario_days[s], t)]
-        for s in SCENARIOS
-        for t in time_periods
-        }
-    )
-    
     model.lam_IDA = pyo.Param(
         model.T,
         model.S,
@@ -855,7 +847,7 @@ def EH2_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
             + m.E_d[t, s]
             + m.eta_ge * m.G1[t, s]
             ==
-            m.De[t, s]
+            m.De[t]
         )
     model.eq_c = pyo.Constraint(model.T, model.S, rule=eq_c)
     
@@ -1337,6 +1329,11 @@ def EH3_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
 
     # ---------- Deterministic parameters (study day) ----------
 
+    model.De = pyo.Param(
+        model.T,
+        initialize={t: DATA["DE"][(study_day, t)] for t in time_periods}
+    )
+
     model.Dh = pyo.Param(
         model.T,
         initialize={t: DATA["DH"][(study_day, t)] for t in time_periods}
@@ -1359,15 +1356,6 @@ def EH3_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
 
     # ---------- Stochastic parameters (scenario days) ----------
 
-    model.De = pyo.Param(
-        model.T,
-        model.S,
-        initialize={(t, s): DATA["DE"][(scenario_days[s], t)]
-        for s in SCENARIOS
-        for t in time_periods
-        }
-    )
-    
     model.lam_IDA = pyo.Param(
         model.T,
         model.S,
@@ -1438,7 +1426,6 @@ def EH3_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
     model.C_EHP = pyo.Var(model.T, model.S, domain=pyo.NonNegativeReals)
     
     model.I_h = pyo.Var(model.T, model.S, domain=pyo.Binary)
-    model.I_c = pyo.Var(model.T, model.S, domain=pyo.Binary)
         
     # =====================================================================
     # OBJECTIVE
@@ -1498,7 +1485,7 @@ def EH3_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
             + m.eta_ge * m.G1[t, s]
             ==
             m.E_3[t, s]
-            + m.De[t, s]
+            + m.De[t]
         )
     
     model.eq_c = pyo.Constraint(model.T, model.S, rule=eq_c)
@@ -1625,20 +1612,17 @@ def EH3_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
     
     # EHP cooling lower limit
     
-    # EHP cooling lower limit
     def eq_p_lower(m, t, s):
-        return m.C_EHP_min * m.I_c[t,s] <= m.C_EHP[t,s]
+        return m.C_EHP_min * (1-m.I_h[t, s]) <= m.C_EHP[t, s]
+    
     model.eq_p_lower = pyo.Constraint(model.T, model.S, rule=eq_p_lower)
     
     # EHP cooling upper limit
-    def eq_p_upper(m, t, s):
-        return m.C_EHP[t,s] <= m.C_EHP_max * m.I_c[t,s]
-    model.eq_p_upper = pyo.Constraint(model.T, model.S, rule=eq_p_upper)
     
-    # EHP just heating or cooling
-    def eq_q(m, t, s):
-        return m.I_c[t,s] + m.I_h[t,s] <= 1
-    model.eq_q = pyo.Constraint(model.T, model.S, rule=eq_q)
+    def eq_p_upper(m, t, s):
+        return m.C_EHP[t, s] <= m.C_EHP_max * (1-m.I_h[t, s])
+    
+    model.eq_p_upper = pyo.Constraint(model.T, model.S, rule=eq_p_upper)
      
     # CHP capacity
     
@@ -1661,7 +1645,6 @@ def EH3_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
     
     model.limit_H2 = pyo.Constraint(model.T, model.S, rule=limit_H2)
     
-  
     return model
 
 ###############################################################################
@@ -2121,16 +2104,11 @@ def EH4_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
 
     # ---------- Deterministic parameters (study day) ----------
 
-    model.lam_DA = pyo.Param(
+    model.De = pyo.Param(
         model.T,
-        initialize={t: DATA["Precio_DA"][(study_day, t)] for t in time_periods}
+        initialize={t: DATA["DE"][(study_day, t)] for t in time_periods}
     )
 
-    model.lam_g = pyo.Param(
-        model.T,
-        initialize={t: DATA["Precio_Gas"][(study_day, t)] for t in time_periods}
-    )
-    
     model.Dh = pyo.Param(
         model.T,
         initialize={t: DATA["DH"][(study_day, t)] for t in time_periods}
@@ -2141,17 +2119,17 @@ def EH4_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
         initialize={t: DATA["DC"][(study_day, t)] for t in time_periods}
     )
 
-    # ---------- Stochastic parameters (scenario days) ----------
-
-    model.De = pyo.Param(
+    model.lam_DA = pyo.Param(
         model.T,
-        model.S,
-        initialize={
-            (t, s): DATA["DE"][(scenario_days[s], t)]
-            for s in SCENARIOS
-            for t in time_periods
-        }
+        initialize={t: DATA["Precio_DA"][(study_day, t)] for t in time_periods}
     )
+
+    model.lam_g = pyo.Param(
+        model.T,
+        initialize={t: DATA["Precio_Gas"][(study_day, t)] for t in time_periods}
+    )
+
+    # ---------- Stochastic parameters (scenario days) ----------
 
     model.lam_IDA = pyo.Param(
         model.T,
@@ -2298,7 +2276,7 @@ def EH4_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
             + m.E_H2y_minus[t, s]
             ==
             m.E_3[t, s]
-            + m.De[t, s]
+            + m.De[t]
             + m.E_H2y_plus[t, s]
         )
     

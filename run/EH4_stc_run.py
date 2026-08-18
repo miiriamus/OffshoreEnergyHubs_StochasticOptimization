@@ -103,9 +103,9 @@ for s in SCENARIOS:
             # Inputs
             # =========================================================
 
-            "DE": pyo.value(model.De[t, s]),
-            "DH": pyo.value(model.Dh[t, s]),
-            "DC": pyo.value(model.Dc[t, s]),
+            "DE": pyo.value(model.De[t]),
+            "DH": pyo.value(model.Dh[t]),
+            "DC": pyo.value(model.Dc[t]),
             "Wind": pyo.value(model.Wind[t, s]),
 
             # =========================================================
