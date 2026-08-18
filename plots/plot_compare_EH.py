@@ -24,9 +24,9 @@ from src.input_data import load_input_data
 # =============================================================================
 
 RESULTS_PATH = ROOT / "outputs"
-study_day = RESULTS_PATH / "2026-05-20"
+study_day = "2026-05-20"
 
-output_folder = study_day
+output_folder = RESULTS_PATH / study_day
 
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
@@ -140,6 +140,7 @@ def plot_first_stage(column, ylabel, filename):
         Line2D([0], [0], color=Azul, lw=3),
         Line2D([0], [0], color=Naranja, lw=3),
         Line2D([0], [0], color=Verde, lw=3),
+        Line2D([0], [0], color=Rojo, lw=3),
     ]
 
     plt.legend(
@@ -154,13 +155,13 @@ def plot_first_stage(column, ylabel, filename):
     plt.tight_layout()
 
     plt.savefig(
-        os.path.join(study_day, f"{filename}.png"),
+        os.path.join(output_folder, f"{filename}.png"),
         dpi=300,
         bbox_inches="tight",
     )
 
     plt.savefig(
-        os.path.join(study_day, f"{filename}.pdf"),
+        os.path.join(output_folder, f"{filename}.pdf"),
         bbox_inches="tight",
     )
 
@@ -223,11 +224,12 @@ def plot_second_stage(column, ylabel, filename, MODELS, weighted=True):
         Line2D([0], [0], color=Azul, lw=3),
         Line2D([0], [0], color=Naranja, lw=3),
         Line2D([0], [0], color=Verde, lw=3),
+        Line2D([0], [0], color=Rojo, lw=3),
     ]
 
     plt.legend(
         legend_handles,
-        ["EH1", "EH2", "EH3"],
+        ["EH1", "EH2", "EH3", "EH4"],
         frameon=False,
         ncol=3,
         loc="upper center",
@@ -237,13 +239,13 @@ def plot_second_stage(column, ylabel, filename, MODELS, weighted=True):
     plt.tight_layout()
 
     plt.savefig(
-        os.path.join(study_day, f"{filename}.png"),
+        os.path.join(output_folder, f"{filename}.png"),
         dpi=300,
         bbox_inches="tight",
     )
 
     plt.savefig(
-        os.path.join(study_day, f"{filename}.pdf"),
+        os.path.join(output_folder, f"{filename}.pdf"),
         bbox_inches="tight",
     )
 
@@ -285,3 +287,4 @@ plot_second_stage("G2", "Furnace Gas (MW)", f"G2_{study_day}", MODELS)
 #plot_second_stage("C_EHP", "Heat Pump Cooling (MW)", f"C_EHP_{study_day}")
 #plot_second_stage("E_3", "Heat Pump Electricity (MW)", f"E_3_{study_day}", MODELS)
 
+print("All figures saved successfully!")

@@ -61,7 +61,8 @@ print(hist)
 raw = hist[
     [
         "Precio_IDA",
-        "Produccion_Eolica"
+        "Produccion_Eolica",
+        "DE"
     ]
 ].copy()
 
@@ -86,6 +87,7 @@ aggregation = tsam.TimeSeriesAggregation(
     weightDict={
         "Precio_IDA": 1.0,
         "Produccion_Eolica": 1.0,
+        "DE": 1.0,
     },
 
     extremePeriodMethod="new_cluster_center"
@@ -150,7 +152,8 @@ scenarios = pd.DataFrame({
 
 variables = [
     ("Produccion_Eolica", "Wind generation (MWh)"),
-    ("Precio_IDA", "Intraday electricity price (€/MWh)")
+    ("Precio_IDA", "Intraday electricity price (€/MWh)"),
+    ("DE", "Electrical demand (MWh)")
 ]
 
 colors = plt.cm.tab10(np.linspace(0, 1, N_SCENARIOS))
@@ -163,7 +166,7 @@ cluster_occurrences = aggregation.clusterPeriodNoOccur
 n_days = len(cluster_assignment)
 
 fig, axes = plt.subplots(
-    2,
+    3,
     2,
     figsize=(14,10),
     sharex=True

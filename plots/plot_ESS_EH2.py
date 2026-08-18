@@ -24,7 +24,9 @@ from src.input_data import load_input_data
 # =============================================================================
 
 RESULTS_PATH = ROOT / "outputs"
-study_day = RESULTS_PATH / "2026-05-20"
+study_day = "2026-05-20"
+
+output_folder = RESULTS_PATH / study_day
 
 # Creamos la carpeta automáticamente si no existe
 if not os.path.exists(study_day):
@@ -35,13 +37,18 @@ if not os.path.exists(study_day):
 # LOAD RESULTS
 # =============================================================================
 
-d2 = pd.read_excel(
+d2 = pd.read_excel(RESULTS_PATH /
     f"EH2_stc_results_{study_day}.xlsx",
     sheet_name="results",
 )
 
-d3 = pd.read_excel(
+d3 = pd.read_excel(RESULTS_PATH /
     f"EH3_stc_results_{study_day}.xlsx",
+    sheet_name="results",
+)
+
+d4 = pd.read_excel(RESULTS_PATH /
+    f"EH4_stc_results_{study_day}.xlsx",
     sheet_name="results",
 )
 
@@ -51,11 +58,9 @@ SCENARIOS = sorted(d2["scenario"].unique())
 # LOAD SCENARIO PROBABILITIES
 # =============================================================================
 
-ROOT = Path(r"C:\Users\Miriam Ucendo\Documents\UNI\5\TFG_mates\code\EH2_mod\nuevo\data")
-
-historical_file = ROOT / "processed" / "historical_data.csv"
-scenarios_file  = ROOT / "processed" / "scenarios_12.csv"
-params_file     = ROOT / "processed" / "params.xlsx"
+historical_file = ROOT / "data" / "processed" / "historical_data.csv"
+scenarios_file  = ROOT / "data" / "processed" / "scenarios_12.csv"
+params_file     = ROOT / "data" / "processed" / "params.xlsx"
 
 SCENARIOS_DATA, SCENARIOS_DATES, time_periods, PARAMS, PROB, DATA = load_input_data(
     params_file,
@@ -243,13 +248,13 @@ def plot_ESS(database):
     plt.tight_layout()
 
     plt.savefig(
-        os.path.join(study_day, f"EH3_ESS_{study_day}.png"),
+        os.path.join(output_folder, f"EH3_ESS_{study_day}.png"),
         dpi=300,
         bbox_inches="tight",
     )
     
     plt.savefig(
-        os.path.join(study_day, f"EH3_ESS_{study_day}.pdf"),
+        os.path.join(output_folder, f"EH3_ESS_{study_day}.pdf"),
         bbox_inches="tight",
     )
 
@@ -390,13 +395,13 @@ def plot_EHP(database):
     plt.tight_layout()
     
     plt.savefig(
-        os.path.join(study_day, f"EH3_EHP_{study_day}.png"),
+        os.path.join(output_folder, f"EH3_EHP_{study_day}.png"),
         dpi=300,
         bbox_inches="tight",
     )
     
     plt.savefig(
-        os.path.join(study_day, f"EH3_EHP_{study_day}.pdf"),
+        os.path.join(output_folder, f"EH3_EHP_{study_day}.pdf"),
         bbox_inches="tight",
     )
     
@@ -411,8 +416,8 @@ def plot_EHP(database):
 # PLOT EH3
 # =============================================================================
 
-#plot_ESS(d3)
-plot_EHP(d3)
+plot_ESS(d3)
+#plot_EHP(d3)
 
 for var in ["Wind_used", "E_IDA", "E_c", "E_d", "E_3", "H_EHP"]:
     print(var)

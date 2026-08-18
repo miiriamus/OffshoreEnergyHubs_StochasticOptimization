@@ -63,9 +63,7 @@ raw = hist[
     [
         "Precio_IDA",
         "Produccion_Eolica",
-        "DE",
-        "DH",
-        "DC"
+        "DE"
     ]
 ].copy()
 
@@ -91,8 +89,6 @@ aggregation = tsam.TimeSeriesAggregation(
         "Precio_IDA": 1.0,
         "Produccion_Eolica": 1.0,
         "DE": 1.0,
-        "DH": 1.0,
-        "DC": 1.0,
     },
 
     extremePeriodMethod="new_cluster_center"

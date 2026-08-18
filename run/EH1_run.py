@@ -89,7 +89,7 @@ with pd.ExcelWriter(output_file, mode='w') as writer:
         model = EH1_model(time_periods, PARAMS, DATA, study_day, scenario_day)
         
         # Solver        
-        solver = pyo.SolverFactory("glpk")
+        solver = pyo.SolverFactory("highs")
         start_time = time.perf_counter()    
         result = solver.solve(model, tee=False)
         solve_duration = time.perf_counter() - start_time   
@@ -127,28 +127,8 @@ with pd.ExcelWriter(output_file, mode='w') as writer:
                 "G2":           pyo.value(model.G2[t]),
                 "H1":           pyo.value(model.H1[t]),
                 "H2":           pyo.value(model.H2[t]),
-                # SHADOW PRICES
-                "mu_e":    model.dual[model.eq_c[t]],   # electricity shadow price
-                "mu_h":    model.dual[model.eq_f[t]],   # heat shadow price
-                "mu_c":    model.dual[model.eq_g[t]],   # cooling shadow price
-                # SHADOW PRICES: MAX CAPACITY
-                "beta_CHP": model.dual[model.limit_G1[t]],
-                "beta_F":   model.dual[model.limit_G2[t]],  
-                "beta_CB":  model.dual[model.limit_H2[t]],  
             })
-    # DUAL RECORDS            
-        for t in time_periods:  
-            dual_records.append({  
-                "scenario": s,  
-                "t": t,  # NEW
-                "mu_e": model.dual[model.eq_c[t]],  
-                "mu_h": model.dual[model.eq_f[t]],  
-                "mu_c": model.dual[model.eq_g[t]],  
-                "beta_CHP": model.dual[model.limit_G1[t]],  
-                "beta_F": model.dual[model.limit_G2[t]],  
-                "beta_CB": model.dual[model.limit_H2[t]], 
-            })  
-            
+
         # Create sheet in the results excel
         sheet_name = f"S{s}_{scenario_day.strftime('%m%d')}"
         
@@ -164,8 +144,4 @@ with pd.ExcelWriter(output_file, mode='w') as writer:
 
 print("\n¡Bucle de optimización finalizado!")
 print(f"Promedio de Costes Mínimos: {np.mean(optimal_sol):.2f}")
-
-# NEW: save all dual values (all scenarios, long format) to their own sheet,
-# convenient for plotting mu_t vs t per scenario or computing mu_bar_t later.
-dual_df = pd.DataFrame(dual_records) 
-                                                            
+                                                           

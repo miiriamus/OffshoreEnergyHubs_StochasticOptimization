@@ -99,13 +99,18 @@ for s in SCENARIOS:
 
             "t": t,
 
-            "Wind": pyo.value(model.Wind[t,s]),
-            "Wind_used": pyo.value(model.Wind_used[t,s]),
-            "Curt": pyo.value(model.Wind[t,s]) - pyo.value(model.Wind_used[t,s]),
+            # Inputs
+            "DE": pyo.value(model.De[t,s]),
+            "DH": pyo.value(model.Dh[t]),
+            "DC": pyo.value(model.Dc[t]),
+            "Wind": pyo.value(model.Wind[t, s]),
 
+            # Electricity
+            "Wind_used": pyo.value(model.Wind_used[t, s]),
+            "Curt": pyo.value(model.Wind[t, s]) - pyo.value(model.Wind_used[t, s]),
             "E_DA": pyo.value(model.E_DA[t]),
-            "E_IDA": pyo.value(model.E_IDA[t,s]),
-            "E": pyo.value(model.E[t,s]),
+            "E_IDA": pyo.value(model.E_IDA[t, s]),
+            "E": pyo.value(model.E[t, s]),
 
             "G": pyo.value(model.G[t]),
             "G1": pyo.value(model.G1[t,s]),
