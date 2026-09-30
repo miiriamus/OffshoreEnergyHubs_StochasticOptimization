@@ -14,10 +14,10 @@ from viz.single_model import run_single_model_plots
 from viz.comparison import run_comparison_plots
 
 STUDY_DAY = "2026-05-20"
-MODEL_NAMES = ["EH1", "EH2", "EH3", "EH4"]
+MODEL_NAMES = ["EH1", "EH2", "EH3", "EH5"]
 
 # Elementos internos a validar de UN modelo concreto (storage, HP...)
-SINGLE_MODEL_TO_PLOT = "EH4"
+SINGLE_MODEL_TO_PLOT = "EH5"
 SINGLE_MODEL_FIGURES = ["ESS", "EHP"]              # -> añade "EHP" cuando quieras validarlo también
 
 # Elementos que sí tiene sentido comparar entre modelos

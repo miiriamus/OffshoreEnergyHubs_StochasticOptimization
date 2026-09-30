@@ -77,6 +77,16 @@ SINGLE_MODEL_FIGURES = {
     #     ylabel="Power (MW) / H2 flow (kg/h)",
     #     filename_template="{model}_ELECTROLYZER_{day}",
     # ),
+    "HSS": FigureSpec(
+    key="HSS",
+    traces=[
+        Trace("HSS", COLORS["soc_grey"], "Expected H2 SOC", kind="bar", show_scenarios=False),
+        Trace("I_H2y_plus", COLORS["blue"], "H2 charge"),
+        Trace("I_H2y_minus", COLORS["red"], "H2 discharge"),
+    ],
+    ylabel="H2 stored (kg)",   # o la unidad que uses
+    filename_template="{model}_SOC_H2_{day}",
+),
 }
 
 # -------------------------------------------------------------------
