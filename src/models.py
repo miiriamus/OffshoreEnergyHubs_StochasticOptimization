@@ -2524,10 +2524,6 @@ def EH5_model(time_periods, p, DATA, study_day, scenario_day):
     model.ramp_up_el = pyo.Param(initialize=p["ramp_up_el"])
     model.ramp_down_el = pyo.Param(initialize=p["ramp_down_el"])
     model.h_warmup = pyo.Param(initialize=p["h_warmup"])
-    # Initial condition: Let's assume that the electrolyzer starts in Standby
-    model.I_stb_ini = pyo.Param(initialize=1)
-    model.I_el_ini = pyo.Param(initialize=0)
-    model.I_off_ini = pyo.Param(initialize=0)
     
     # ---------- Auxiliary Systems parameters ----------
     model.alpha_DES = pyo.Param(initialize=p["alpha_DES"])
@@ -2760,6 +2756,12 @@ def EH5_model(time_periods, p, DATA, study_day, scenario_day):
     def eq_SOEC_states(m, t):
         return m.I_off[t] + m.I_stb[t] + m.I_el[t] == 1
     model.eq_SOEC_states = pyo.Constraint(model.T, rule=eq_SOEC_states)
+    
+    # Initial condition: Let's assume that the electrolyzer starts in Standby
+    def eq_SOEC_initial_state(m, t):
+        if t == m.T.first(): return m.I_stb[t] == 1
+        return pyo.Constraint.Skip
+    model.eq_SOEC_initial_state = pyo.Constraint(model.T, rule=eq_SOEC_initial_state)
     
     # Startup State Transition Logic (eq:SOEC_startup_logic)
     def eq_SOEC_startup_logic(m, t):
@@ -3171,6 +3173,11 @@ def EH5_stc_model(time_periods, SCENARIOS, PROB, p, DATA, study_day, scenario_da
     # --------------------------------------------------------------------- 
     def eq_SOEC_states(m, t, s): return m.I_off[t, s] + m.I_stb[t, s] + m.I_el[t, s] == 1
     model.eq_SOEC_states = pyo.Constraint(model.T, model.S, rule=eq_SOEC_states)
+    
+    def eq_SOEC_initial_state(m, t, s):
+        if t == m.T.first(): return m.I_stb[t, s] == 1
+        return pyo.Constraint.Skip
+    model.eq_SOEC_initial_state = pyo.Constraint(model.T, model.S, rule=eq_SOEC_initial_state)
     
     def eq_SOEC_startup_logic(m, t, s):
         if t == m.T.first(): return pyo.Constraint.Skip

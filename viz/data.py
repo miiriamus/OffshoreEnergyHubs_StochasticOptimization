@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-data.py
+Created on Sun Aug 30 11:22:37 2026
+
+@author: Miriam_Ucendo
+@filename: data.py
 
 Carga de resultados (first_stage + results por escenario) y de
 probabilidades de escenario. Todo lo demás en el paquete trabaja con

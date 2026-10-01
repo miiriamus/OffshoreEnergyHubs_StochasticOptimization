@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-comparison.py
+Created on Sun Aug 30 11:22:37 2026
+
+@author: Miriam_Ucendo
+@filename: comparison.py
 
 Figuras que comparan UNA variable entre varios modelos EH. Solo las
 variables registradas en specs.COMPARISON_ELEMENTS aparecen aquí — el

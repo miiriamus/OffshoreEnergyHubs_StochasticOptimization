@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-config.py
+Created on Sun Aug 30 11:22:37 2026
+
+@author: Miriam_Ucendo
+@filename: config.py
 
 Fuente única de verdad para: paleta de colores, estilo matplotlib y rutas
 de salida. Nada aquí sabe qué es un "EH3" ni qué es una "SOC" — solo
@@ -30,7 +33,7 @@ MODEL_COLORS = {
     "EH1": COLORS["blue"],
     "EH2": COLORS["orange"],
     "EH3": COLORS["green"],
-    "EH4": COLORS["red"],
+    "EH5": COLORS["red"],
 }
 
 MPL_STYLE = {

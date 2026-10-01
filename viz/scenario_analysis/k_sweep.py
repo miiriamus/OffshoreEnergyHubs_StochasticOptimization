@@ -9,12 +9,15 @@ Created on Wed Jul 22 22:52:00 2026
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from viz.config import COLORS, RESULTS_PATH, apply_style
+from viz.engine import save_fig
+
 # ─── COLORES ────────────────────────────────────────────────────────
-Azul     = "#1F4E79"   # Azul marino
-Naranja  = "#D55E00"   # Naranja oscuro
-Verde    = "#2A9D8F"   # Verde petróleo
-Morado   = "#7B2CBF"   # Morado elegante  
-Rojo      = "#C44E52"   # Brick red
+Azul     = COLORS["blue"]
+Naranja  = COLORS["orange"]
+
+FIG_FOLDER = RESULTS_PATH / "scenario_analysis"
+FIG_FOLDER.mkdir(parents=True, exist_ok=True)
 
 # =====================================================
 # DATA
@@ -39,27 +42,7 @@ df = pd.DataFrame({
 # MATPLOTLIB STYLE
 # =============================================================================
 
-plt.rcParams.update({
-
-    "figure.facecolor": "white",
-    "axes.facecolor": "white",
-
-    "font.family": "Arial",
-
-    "axes.titlesize": 20,
-    "axes.titleweight": "bold",
-
-    "axes.labelsize": 18,
-
-    "xtick.labelsize": 15,
-    "ytick.labelsize": 15,
-
-    "legend.fontsize": 18,
-
-    "axes.edgecolor": "#555555",
-    "axes.linewidth": 0.8
-
-})
+apply_style()
 
 
 # =====================================================
@@ -94,7 +77,6 @@ ax[0].plot(
 ax[0].set_xlabel("Number of representative scenarios")
 ax[0].set_ylabel("RMSE")
 
-ax[0].grid(alpha=.3)
 
 ax[0].legend()
 
@@ -124,7 +106,6 @@ ax[1].plot(
 ax[1].set_xlabel("Number of representative scenarios")
 ax[1].set_ylabel("€")
 
-ax[1].grid(alpha=.3)
 
 ax[1].legend()
 
@@ -144,8 +125,5 @@ ax[2].plot(
 ax[2].set_xlabel("Number of representative scenarios")
 ax[2].set_ylabel("Objective value (€)")
 
-ax[2].grid(alpha=.3)
 
-plt.tight_layout()
-
-plt.show()
+save_fig(fig, FIG_FOLDER, "k_sweep")

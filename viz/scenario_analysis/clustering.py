@@ -5,7 +5,6 @@ Created on Wed Jul 22 15:49:36 2026
 @author: Miriam_Ucendo
 @filename: clustering_plot
 """
-from pathlib import Path
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -14,17 +13,23 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import tsam.timeseriesaggregation as tsam
 
+from viz.config import ROOT, RESULTS_PATH, apply_style
+from viz.engine import save_fig
+
 # =====================================================
 # CONFIGURACIÓN
 # =====================================================
 
 N_SCENARIOS = 12
 
-ROOT = Path(r"C:\Users\Miriam Ucendo\Documents\UNI\5\TFG_mates\1605136_BSc_Math\data")
+DATA = ROOT / "data"
 
-INPUT = ROOT / "processed" / "historical_data.csv"
+INPUT = DATA / "processed" / "historical_data.csv"
 
-OUTPUT = ROOT / "processed" / f"scenarios_{N_SCENARIOS}.csv"
+OUTPUT = DATA / "processed" / f"scenarios_{N_SCENARIOS}.csv"
+
+FIG_FOLDER = RESULTS_PATH / "scenario_analysis"
+FIG_FOLDER.mkdir(parents=True, exist_ok=True)
 
 
 print("=== Generador de escenarios ===\n")
@@ -61,8 +66,7 @@ print(hist)
 raw = hist[
     [
         "Precio_IDA",
-        "Produccion_Eolica",
-        "DE"
+        "Produccion_Eolica"
     ]
 ].copy()
 
@@ -87,7 +91,6 @@ aggregation = tsam.TimeSeriesAggregation(
     weightDict={
         "Precio_IDA": 1.0,
         "Produccion_Eolica": 1.0,
-        "DE": 1.0,
     },
 
     extremePeriodMethod="new_cluster_center"
@@ -153,7 +156,6 @@ scenarios = pd.DataFrame({
 variables = [
     ("Produccion_Eolica", "Wind generation (MWh)"),
     ("Precio_IDA", "Intraday electricity price (€/MWh)"),
-    ("DE", "Electrical demand (MWh)")
 ]
 
 colors = plt.cm.tab10(np.linspace(0, 1, N_SCENARIOS))
@@ -166,7 +168,7 @@ cluster_occurrences = aggregation.clusterPeriodNoOccur
 n_days = len(cluster_assignment)
 
 fig, axes = plt.subplots(
-    3,
+    2,
     2,
     figsize=(14,10),
     sharex=True
@@ -176,27 +178,7 @@ fig, axes = plt.subplots(
 # MATPLOTLIB STYLE
 # =============================================================================
 
-plt.rcParams.update({
-
-    "figure.facecolor": "white",
-    "axes.facecolor": "white",
-
-    "font.family": "Arial",
-
-    "axes.titlesize": 20,
-    "axes.titleweight": "bold",
-
-    "axes.labelsize": 18,
-
-    "xtick.labelsize": 15,
-    "ytick.labelsize": 15,
-
-    "legend.fontsize": 18,
-
-    "axes.edgecolor": "#555555",
-    "axes.linewidth": 0.8
-
-})
+apply_style()
 
 # =====================================================
 # LOOP VARIABLES
@@ -289,7 +271,4 @@ fig.legend(
     frameon=False
 )
 
-plt.tight_layout()
-
-plt.show()
-
+save_fig(fig, FIG_FOLDER, f"clustering_k{N_SCENARIOS}")

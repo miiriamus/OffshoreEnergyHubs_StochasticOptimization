@@ -1,12 +1,22 @@
 # -*- coding: utf-8 -*-
 """
-run_plots.py
+Created on Sun Aug 30 11:22:37 2026
+
+@author: Miriam_Ucendo
+@filename: run_plots.py
 
 Único archivo que se toca en el día a día: elige el día de estudio, qué
 modelos cargar, y qué figuras/elementos generar. Todo lo demás vive en
 viz/ y no debería necesitar cambios cuando solo quieres validar un
 elemento nuevo o comparar una variable nueva.
 """
+
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
 
 from viz.config import apply_style, get_output_folder
 from viz.data import load_models, load_probabilities
@@ -18,7 +28,7 @@ MODEL_NAMES = ["EH1", "EH2", "EH3", "EH5"]
 
 # Elementos internos a validar de UN modelo concreto (storage, HP...)
 SINGLE_MODEL_TO_PLOT = "EH5"
-SINGLE_MODEL_FIGURES = ["ESS", "EHP"]              # -> añade "EHP" cuando quieras validarlo también
+SINGLE_MODEL_FIGURES = ["ESS", "HSS", "ELZ_STATES", "EHP"]   # "EHP" también disponible
 
 # Elementos que sí tiene sentido comparar entre modelos
 COMPARISON_FIGURES = ["Wind_used", "Curt", "G1", "G2", "G"]

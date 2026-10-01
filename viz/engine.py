@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-engine.py
+Created on Sun Aug 30 11:22:37 2026
+
+@author: Miriam_Ucendo
+@filename: engine.py
 
 Primitivas de bajo nivel, agnósticas al modelo. Nada aquí sabe qué es
 "EH3" ni qué es "ESS" — solo sabe dibujar un fan de escenarios, una
@@ -40,10 +43,10 @@ def draw_expected_line(ax, expected_df, column, color, lw=3, zorder=3):
     ax.plot(expected_df["t"], expected_df[column], color=color, lw=lw, zorder=zorder)
 
 
-def draw_expected_bar(ax, expected_df, column, color, width=0.75, zorder=1):
+def draw_expected_bar(ax, expected_df, column, color, width=0.75, zorder=1, bottom=None):
     ax.bar(
         expected_df["t"], expected_df[column],
-        width=width, color=color, edgecolor="grey", zorder=zorder,
+        width=width, color=color, edgecolor="grey", zorder=zorder, bottom=bottom,
     )
 
 

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-specs.py
+Created on Sun Aug 30 11:22:37 2026
+
+@author: Miriam_Ucendo
+@filename: specs.py
 
 Catálogo declarativo de "qué se puede plotear". Añadir un elemento nuevo
 al pipeline de validación = añadir una entrada aquí. No hace falta
@@ -9,9 +12,15 @@ distinto (composición de varias trazas en una figura) — ver
 single_model.py / comparison.py.
 """
 
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
 from dataclasses import dataclass, field
 from typing import List
-from .config import COLORS
+from viz.config import COLORS
 
 
 @dataclass
@@ -19,7 +28,7 @@ class Trace:
     column: str
     color: str
     label: str
-    kind: str = "line"           # "line" | "bar"
+    kind: str = "line"           # "line" | "bar" | "stack" (barras apiladas, en orden de trazas)
     lw: float = 3
     show_scenarios: bool = True   # dibujar el fan de escenarios individuales detrás
 
@@ -31,6 +40,20 @@ class FigureSpec:
     traces: List[Trace]
     ylabel: str
     filename_template: str  # p.ej. "{model}_ESS_{day}"
+    
+    
+@dataclass
+class StateSpec:
+    """
+    Estado discreto de un elemento: una línea escalonada por escenario.
+    `state_columns` son los indicadores binarios de cada estado, en orden
+    (nivel 0, 1, 2...); `state_labels` los nombres que aparecen en el eje y.
+    """
+    key: str
+    state_columns: List[str]
+    state_labels: List[str]
+    ylabel: str
+    filename_template: str
 
 
 @dataclass
@@ -78,15 +101,26 @@ SINGLE_MODEL_FIGURES = {
     #     filename_template="{model}_ELECTROLYZER_{day}",
     # ),
     "HSS": FigureSpec(
-    key="HSS",
-    traces=[
-        Trace("HSS", COLORS["soc_grey"], "Expected H2 SOC", kind="bar", show_scenarios=False),
-        Trace("I_H2y_plus", COLORS["blue"], "H2 charge"),
-        Trace("I_H2y_minus", COLORS["red"], "H2 discharge"),
-    ],
-    ylabel="H2 stored (kg)",   # o la unidad que uses
-    filename_template="{model}_SOC_H2_{day}",
-),
+        key="HSS",
+        traces=[
+            Trace("SOC_H2", COLORS["soc_grey"], "Expected H2 SOC", kind="bar", show_scenarios=False),
+            Trace("HY_in", COLORS["blue"], "H2 charge"),
+            Trace("HY_out", COLORS["red"], "H2 discharge"),
+        ],
+        ylabel="H2 power (MW) / H2 energy (MWh)",
+        filename_template="{model}_HSS_{day}",
+    ),
+
+
+    # Estados del electrolizador: 0 = Off, 1 = Standby, 2 = On (electrolisis).
+    # I_off + I_stb + I_el = 1 en cada hora y escenario.
+    "ELZ_STATES": StateSpec(
+        key="ELZ_STATES",
+        state_columns=["I_off", "I_stb", "I_el"],
+        state_labels=["Off", "Standby", "On"],
+        ylabel="Electrolyzer state",
+        filename_template="{model}_ELZ_states_{day}",
+    ),
 }
 
 # -------------------------------------------------------------------
